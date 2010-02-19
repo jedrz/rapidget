@@ -1,0 +1,29 @@
+Wersja 0.1.5 (12-09-2009)
+	- zabezpiecznie przed plikami zawierającymi rozszerzenie .html (to rozszerzenie zostaje usunięte)
+
+Wersja 0.1.4 (20-07-2009)
+	- poprawiony błąd z przekazywaniem linków do funkcji main
+	- poprawiony błąd w funkcji url w przypadku nieudanego połączenia
+
+Wersja 0.1.3 (21-07-2009)
+	- poprawna obsługa pliku z linkami
+
+Wersja 0.1.2 (20-07-2009)
+	- dodany opcjonalny argument delete do funkcji sleep, który określa czy
+	wyczyścić aktualną linię
+	- zmiany w okresie oczekiwania (90 sekund), gdy ktoś pobiera już pliki
+	- dodana zmienna lokalna limit, która mówi czy wyświetlić po raz pierwszy
+	informację, że limit pobierania został przekroczony
+	- poprawki czytania listy linków z pliku
+	- dodanie instrukcji finally do funkcji open_url, która zamyka otwarty plik
+	- pozbycie się zmiennej globalnej busy
+
+Wersja 0.1.1 (19-07-2009)
+	- drobne zmiany w pliku progbar.py
+	- dodanie opcji wyboru katalogu zapisu z użyciem OptionParser
+	- dodanie opcji czytania linków z pliku
+	- przeniesienie funkcji download_file do osobnego pliku
+	- drobne zmiany w kodzie
+
+Wersja 0.1 (16-07-2009)
+	- pierwsza działająca wersja
