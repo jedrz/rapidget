@@ -195,9 +195,9 @@ def main(urls=[]):
      - wyboru pliku z listą linków
     """
     parser = OptionParser(usage="Usage: %prog [options] [links]")
-    parser.add_option("-p", "--path", help="Gdzie zapisać pliki",
+    parser.add_option("-p", "--path", help="Gdzie zapisac pliki",
             default=os.getcwd())
-    parser.add_option("-l", "--list", help="Lista adresów")
+    parser.add_option("-l", "--list", help="Lista adresow")
     (options, args) = parser.parse_args()
     if not os.path.isdir(options.path):
         print("Podany katalog do zapisu plików nie istnieje")
