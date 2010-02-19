@@ -1,3 +1,6 @@
+rapidget
+========
+
 Program ułatwia pobieranie plików z serwisu rapidshare.com. Wystarczy podać link,
 a program sam odczeka odpowiednią ilość sekund i pobierze plik.
 
@@ -12,4 +15,4 @@ Skrypt można także uruchomić bez parametrów,
 wtedy linki podajemy oddzielone pojedynczą spacją.
 
 Wymagania:
-*Python 2.6
+* Python 2.6
