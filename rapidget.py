@@ -42,7 +42,7 @@ from download import download_file
 
 
 __author__ = "Łukasz Jędrzejewski <lukasz892@gmail.com>"
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 
 USER_AGENT = "Mozilla/5.0"
