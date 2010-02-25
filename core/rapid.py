@@ -11,7 +11,17 @@ import re
 __version__ = "0.2"
 
 
-class RapidWaiter(threading.Thread):
+class RapidBase(threading.Thread):
+
+    def __init__(self):
+        super(RapidBase, self).__init__()
+        self.end_thread = False
+
+    def stop(self):
+        self.end_thread = True
+    
+
+class RapidWaiter(RapidBase):
     USER_AGENT = "Mozilla/5.0"
     _rx_link = re.compile(r"action=(?:\")(.*?)(?:\") method=\"post\"")
     _rx_seconds = re.compile(r"var c=(\d*);")
@@ -47,6 +57,11 @@ class RapidWaiter(threading.Thread):
         next_page = self._open_url(next_url, data)
         return next_page
 
+    def _sleep(self, count):
+        while not self.end_thread and count > 0:
+            time.sleep(1)
+            count -= 1
+
     def sleep(self, page, url):
         # próbuję wyciągnąć sekundy ze strony, jeśli limit pobierania
         # został przekroczony
@@ -62,32 +77,35 @@ class RapidWaiter(threading.Thread):
                 if not self.busy:
                     self.busy = True
                 self.count = 180
-                time.sleep(180)
+                self._sleep(180)
             else:
                 if not self.limit:
                     self.limit = True
                 self.count = minutes * 30
-                time.sleep(minutes * 30)
+                self._sleep(minutes * 30)
         else:
             self.count = seconds
-            time.sleep(seconds)
+            self._sleep(seconds)
             self.done = True
 
     def run(self):
         page = ""
-        while not self.done:
+        while not (self.done or self.end_thread):
             page = self._send_post(self.url)
             if page is None:
                 # TODO dopisac
                 pass
             self.sleep(page, self.url)
-        self.download_url = self.rx_link.search(page).group(1)
+        try:
+            self.download_url = self._rx_link.search(page).group(1)
+        except AttributeError:
+            pass
 
     def wait(self):
         self.start()
     
 
-class RapidDownloader(threading.Thread):
+class RapidDownloader(RapidBase):
 
     STEP = 1024 # ile bajtów pobieram w każdym obiegu pętli
     
@@ -105,15 +123,13 @@ class RapidDownloader(threading.Thread):
         outfile = open(self.path, "wb")
         urlfile = urllib2.urlopen(self.download_url)
         self.filesize = int(urlfile.headers.get("Content-Length"))
-
-        while True:
+        while not self.end_thread:
             bytes = urlfile.read(self.STEP)
             outfile.write(bytes)
             if bytes == "":
                 # plik pobrany
                 break
             self.current_pos += self.STEP
-
         urlfile.close()
         outfile.close()
 

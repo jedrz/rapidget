@@ -11,7 +11,12 @@ uaktualniany (nie ma niepotrzebnego narzutu obliczeniowego związanego z
 mnożeniem i dzieleniem wielkich liczb oraz z działaniami na napisach).
 Wypisanie obiektu klasy ProgressBar wypisze aktualny wygląd paska.
 
-Klasa ClearScreen jest przydatna do wyświetlania paska postępu.
+Funkcje cone, ctwo, cthree służą do czyszczenia ekranu cofając kursor do
+początku linii.
+
+Przed wypisywaniem tekstu wywołać najpierw funkcję cone.
+Następnie przed każdym wypisaniem wywołać funkcję ctwo.
+Po wypisaniu wywołać funkcję cthree.
 
 Wygląd paska: 5% [###                      ]
 
@@ -94,32 +99,17 @@ class ProgressBar(object):
         return self.bar
 
 
-class ClearScreen(object):
-    """Klasa czyści ekran cofając kursor do początku linii.
+ESC = chr(27)
 
-    Przed wypisywaniem tekstu wywołać najpierw metodę one.
-    Następnie przed każdym wypisaniem wywołać medotę two.
-    Po wypisaniu wywołać metodę three.
 
-    Przykład:
-    c = ClearScreen()
-    c.one()
-    while True:
-        c.two()
-        sys.stdout.write("Ta linia będzie ciągle wypisywana")
-        c.three()
-    """
+def cone():
+    sys.stdout.write(ESC + "[s")
 
-    esc = chr(27)
+def ctwo():
+    sys.stdout.write(ESC + "[2K" + ESC + "[u" + ESC + "[s")
 
-    def one(self):
-        sys.stdout.write(self.esc + "[s")
-
-    def two(self):
-        sys.stdout.write(self.esc + "[2K" + self.esc + "[u" + self.esc + "[s")
-
-    def three(self):
-        sys.stdout.flush()
+def cthree():
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":
