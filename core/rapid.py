@@ -57,10 +57,10 @@ class RapidWaiter(RapidBase):
         next_page = self._open_url(next_url, data)
         return next_page
 
-    def _sleep(self, count):
-        while not self.end_thread and count > 0:
+    def _sleep(self):
+        while not self.end_thread and self.count > 0:
             time.sleep(1)
-            count -= 1
+            self.count -= 1
 
     def sleep(self, page, url):
         # próbuję wyciągnąć sekundy ze strony, jeśli limit pobierania
@@ -74,18 +74,18 @@ class RapidWaiter(RapidBase):
             except AttributeError:
                 # nie wyciągnąłem minut --> adres ip komputera już pobiera
                 # inny plik
-                if not self.busy:
-                    self.busy = True
+                self.busy = True
                 self.count = 180
-                self._sleep(180)
+                self._sleep()
+                self.busy = False
             else:
-                if not self.limit:
-                    self.limit = True
+                self.limit = True
                 self.count = minutes * 30
-                self._sleep(minutes * 30)
+                self._sleep()
+                self.limit = False
         else:
             self.count = seconds
-            self._sleep(seconds)
+            self._sleep()
             self.done = True
 
     def run(self):

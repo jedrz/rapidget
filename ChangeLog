@@ -1,3 +1,7 @@
+Wersja 0.2 (27-02-2010)
+	- skrypt przepisany, podzielony na moduły
+	- oczekiwanie i pobieranie za pomocą wątków
+
 Wersja 0.1.6 (19-02-2010)
 	- program nie wywala się gdy uruchomimy go z opcja '-h'
 

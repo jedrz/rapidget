@@ -25,13 +25,12 @@ import time
 import progbar
 total = 1000
 p = progbar.ProgressBar(total)
-c = progbar.ClearScreen()
-c.one()
+progbar.cone()
 for i in xrange(total + 1):
-    c.two()
+    progbar.ctwo()
     p.update(i)
     print p,
-    c.three()
+    progbar.cthree()
     time.sleep(0.01)
 """
 
@@ -82,7 +81,7 @@ class ProgressBar(object):
         self.max.  Gdy amount == self.max zostanie wypełniony cały pasek.
         """
         if amount > self.max:
-            raise AmountError("Amount is greater than max")
+            raise AmountError("Amount is higher than max")
         hashes = amount * self.size / self.max
         percent = amount * 100 / self.max
         if hashes > self.hashes or percent > self.percent:
@@ -110,17 +109,3 @@ def ctwo():
 
 def cthree():
     sys.stdout.flush()
-
-
-if __name__ == "__main__":
-    import time
-    total = 1000
-    p = ProgressBar(total)
-    c = ClearScreen()
-    c.one()
-    for i in xrange(total + 1):
-        c.two()
-        p.update(i)
-        print p,
-        c.three()
-        time.sleep(0.01)

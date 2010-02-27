@@ -1,7 +1,7 @@
 Program ułatwia pobieranie plików z serwisu rapidshare.com. Wystarczy podać link, a program sam odczeka odpowiednią ilość sekund i pobierze plik.
 
 Użycie:
-rapidget [opcje] link1 [link2..]
+rapidget.py [opcje] link1 [link2..]
 Opcje:
   -h, --help            wyświetla pomoc
   -p PATH, --path=PATH  Katalog do którego zapisać pliki
