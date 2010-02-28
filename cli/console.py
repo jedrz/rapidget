@@ -48,7 +48,7 @@ def download(url, path, filename):
                 _sleep(waiter.count, True)
             else:
                 _sleep(waiter.count)
-        elif waiter.count == 0:
+        else:
             time.sleep(0.3)
     print("Pobieram plik: {0}".format(filename))
     downloader = rapid.RapidDownloader(waiter.download_url, \
@@ -56,19 +56,19 @@ def download(url, path, filename):
     downloader.download()
     # poczekaj aż plik zostanie otwarty
     while downloader.filesize == 0:
-        time.sleep(1)
+        time.sleep(0.1)
     progressbar = progbar.ProgressBar(downloader.filesize)
     progbar.cone()
-    print(progressbar)
-    while not downloader.is_downloaded():
-        progressbar.update(downloader.current_pos)
+    def print_progbar():
         progbar.ctwo()
         sys.stdout.write("{0}".format(progressbar))
         progbar.cthree()
+    print_progbar()
+    while not downloader.is_downloaded():
+        progressbar.update(downloader.current_pos)
+        print_progbar()
     progressbar.update(downloader.filesize)
-    progbar.ctwo()
-    sys.stdout.write("{0}".format(progressbar))
-    progbar.cthree()
+    print_progbar()
     print("Plik został pobrany")
 
 
@@ -115,6 +115,9 @@ def main(urls=[], sargs=sys.argv):
             try:
                 download(url, options.path, filename)
             except KeyboardInterrupt:
+                sys.exit()
+            except IOError:
+                print("Błąd połączenia")
                 sys.exit()
         if i != len(args) - 1:
             print("")

@@ -38,19 +38,13 @@ class RapidWaiter(RapidBase):
 
     def _open_url(self, url, data=None):
         request = urllib2.Request(url, data, {"User-Agent": self.USER_AGENT})
-        try:
-            response = urllib2.urlopen(request)
-        except IOError:
-            return None
-        else:
-            html = response.read()
-            response.close()
-            return html
+        response = urllib2.urlopen(request)
+        html = response.read()
+        response.close()
+        return html
 
-    def _send_post(self, url):
-        page = self._open_url(url)
-        if page is None:
-            return None
+    def send_post(self):
+        page = self._open_url(self.url)
         next_url = self._rx_link.search(page).group(1)
         # dane które należy przesłać by dostać kolejną stronę
         data = urllib.urlencode({"dl.start": "Free"})
@@ -62,7 +56,7 @@ class RapidWaiter(RapidBase):
             time.sleep(1)
             self.count -= 1
 
-    def sleep(self, page, url):
+    def sleep(self, page):
         # próbuję wyciągnąć sekundy ze strony, jeśli limit pobierania
         # został przekroczony
         try:
@@ -91,11 +85,8 @@ class RapidWaiter(RapidBase):
     def run(self):
         page = ""
         while not (self.done or self.end_thread):
-            page = self._send_post(self.url)
-            if page is None:
-                # TODO dopisac
-                pass
-            self.sleep(page, self.url)
+            page = self.send_post()
+            self.sleep(page)
         try:
             self.download_url = self._rx_link.search(page).group(1)
         except AttributeError:
@@ -106,12 +97,14 @@ class RapidWaiter(RapidBase):
     
 
 class RapidDownloader(RapidBase):
+    """Klasa służy do pobierania dowolnych plików,
+    korzystając z wątków"""
 
     STEP = 1024 # ile bajtów pobieram w każdym obiegu pętli
     
     def __init__(self, url, path):
         super(RapidDownloader, self).__init__()
-        # bezpośrednik adres do pobrania pliku
+        # bezpośredni adres do pobrania pliku
         self.download_url = url
         # ścieżka do zapisu pliku (z nazwą pliku)
         self.path = path
@@ -129,7 +122,7 @@ class RapidDownloader(RapidBase):
             if bytes == "":
                 # plik pobrany
                 break
-            self.current_pos += self.STEP
+            self.current_pos += len(bytes)
         urlfile.close()
         outfile.close()
 
