@@ -100,7 +100,7 @@ class RapidDownloader(RapidBase):
     """Klasa służy do pobierania dowolnych plików,
     korzystając z wątków"""
 
-    STEP = 1024 # ile bajtów pobieram w każdym obiegu pętli
+    STEP = 1024 * 64 # ile bajtów pobieram w każdym obiegu pętli
     
     def __init__(self, url, path):
         super(RapidDownloader, self).__init__()
