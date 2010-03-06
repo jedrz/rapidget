@@ -69,7 +69,7 @@ def download(url, path, filename):
         print_progbar()
     progressbar.update(downloader.filesize)
     print_progbar()
-    print("Plik został pobrany")
+    print("\nPlik został pobrany")
 
 
 def main(urls=[], sargs=sys.argv):

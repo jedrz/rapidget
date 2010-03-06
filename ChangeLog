@@ -1,9 +1,10 @@
-Wersja 0.2.1 (28-02-2010)
+Wersja 0.2.1 (28-02-2010, 06-02-2010)
 	- skrypt nie zapętla sie
 	- wyjątek AmountError nie jest rzucany
 	- zmiany w RapidWaiter - nie przechwytuje wyjątków
 	- zmiany w RapidDownloader - poprawnie liczy ilość pobranych bajtów,
 	zwiększona ilość pobieranych bajtów w każdym obiegu pętli
+	- poprawne wypisywanie
 
 Wersja 0.2 (27-02-2010)
 	- skrypt przepisany, podzielony na moduły
