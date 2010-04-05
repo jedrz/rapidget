@@ -9,6 +9,7 @@ import re
 
 
 class RapidBase(threading.Thread):
+    """Bazowa klasa z możliwością zatrzymania wątku"""
 
     def __init__(self):
         super(RapidBase, self).__init__()
@@ -19,6 +20,8 @@ class RapidBase(threading.Thread):
     
 
 class RapidWaiter(RapidBase):
+    """Klasa do oczekiwania na pobieranie"""
+
     USER_AGENT = "Mozilla/5.0"
     _rx_link = re.compile(r"action=(?:\")(.*?)(?:\") method=\"post\"")
     _rx_seconds = re.compile(r"var c=(\d*);")
@@ -28,12 +31,17 @@ class RapidWaiter(RapidBase):
         super(RapidWaiter, self).__init__()
         self.url = url
         self.download_url = ""
+        # ile sekund należy poczekać
         self.count = 0
+        # adres ip zajęty
         self.busy = False
+        # przekroczony limit pobierania
         self.limit = False
+        # można pobierać
         self.done = False
 
     def _open_url(self, url, data=None):
+        """Otwiera url i zwraca źródło"""
         request = urllib2.Request(url, data, {"User-Agent": self.USER_AGENT})
         response = urllib2.urlopen(request)
         html = response.read()
@@ -41,6 +49,7 @@ class RapidWaiter(RapidBase):
         return html
 
     def send_post(self):
+        """Wysyła zapytanie, zwraca kolejną stronę"""
         page = self._open_url(self.url)
         next_url = self._rx_link.search(page).group(1)
         # dane które należy przesłać by dostać kolejną stronę
@@ -49,11 +58,14 @@ class RapidWaiter(RapidBase):
         return next_page
 
     def _sleep(self):
+        """Oczekuje pewną liczbę sekund lub przerywa po zatrzymaniu wątku"""
         while not self.end_thread and self.count > 0:
             time.sleep(1)
             self.count -= 1
 
     def sleep(self, page):
+        """Oczekuje odpowiednią ilość sekund w zależności od uzyskanej
+        strony"""
         # próbuję wyciągnąć sekundy ze strony, jeśli limit pobierania
         # został przekroczony
         try:
@@ -80,6 +92,7 @@ class RapidWaiter(RapidBase):
             self.done = True
 
     def run(self):
+        """Oczekuje do momentu uzyskania adresu do pliku"""
         page = ""
         while not (self.done or self.end_thread):
             page = self.send_post()
@@ -90,6 +103,7 @@ class RapidWaiter(RapidBase):
             pass
 
     def wait(self):
+        """Metoda do uruchomienia oczekiwania"""
         self.start()
     
 
@@ -105,8 +119,10 @@ class RapidDownloader(RapidBase):
         self.download_url = url
         # ścieżka do zapisu pliku (z nazwą pliku)
         self.path = path
-        self.filesize = 0 # rozmiar pliku
-        self.current_pos = 0 # ile bajtów pobrano
+        # rozmiar pliku
+        self.filesize = 0
+        # ile bajtów pobrano
+        self.current_pos = 0
 
     def run(self):
         """Pobiera plik z wykorzystaniem wątków"""
@@ -124,7 +140,9 @@ class RapidDownloader(RapidBase):
         outfile.close()
 
     def download(self):
+        """Metoda do uruchomienia pobierania"""
         self.start()
 
     def is_downloaded(self):
+        """Czy plik został pobrany"""
         return self.current_pos == self.filesize
