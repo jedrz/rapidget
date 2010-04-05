@@ -8,9 +8,6 @@ import time
 import re
 
 
-__version__ = "0.2"
-
-
 class RapidBase(threading.Thread):
 
     def __init__(self):
