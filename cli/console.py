@@ -31,9 +31,18 @@ def _sleep(count, delete=False):
         print("")
 
 
+threads = []
+
+def stop():
+    """Zatrzymuje wszystkie wątki"""
+    for t in threads:
+        t.stop()
+
+
 def download(url, path, filename):
     """Pobiera plik, korzysta z RapidWaiter i RapidDownloader"""
     waiter = rapid.RapidWaiter(url)
+    threads.append(waiter)
     waiter.wait()
     limit = busy = False
     while not waiter.done:
@@ -53,6 +62,7 @@ def download(url, path, filename):
     print("Pobieram plik: {0}".format(filename))
     downloader = rapid.RapidDownloader(waiter.download_url, \
             os.path.join(path, filename))
+    threads.append(downloader)
     downloader.download()
     # poczekaj aż plik zostanie otwarty
     while downloader.filesize == 0:
@@ -115,12 +125,15 @@ def main(urls=[], sargs=sys.argv):
             try:
                 download(url, options.path, filename)
             except KeyboardInterrupt:
+                stop()
                 sys.exit()
             except IOError:
                 print("Błąd połączenia")
                 sys.exit()
         if i != len(args) - 1:
             print("")
+    global threads
+    threads = []
 
 
 if __name__ == "__main__":
