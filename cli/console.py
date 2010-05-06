@@ -44,7 +44,7 @@ def download(url, path, filename):
     waiter = rapid.RapidWaiter(url)
     threads.append(waiter)
     waiter.wait()
-    limit = busy = False
+    overloaded = limit = busy = False
     while not waiter.done:
         if waiter.limit and not limit:
             print("Przekroczyłeś limit pobierania")
@@ -52,8 +52,11 @@ def download(url, path, filename):
         if waiter.busy and not busy:
             print("Twój adres ip pobiera już pliki")
             busy = True
+        if waiter.overloaded and not overloaded:
+            print("Zbyt wiele użytkowników pobiera teraz pliki")
+            overloaded = True
         if waiter.count > 0:
-            if waiter.busy or waiter.limit:
+            if waiter.busy or waiter.limit or waiter.overloaded:
                 _sleep(waiter.count, True)
             else:
                 _sleep(waiter.count)

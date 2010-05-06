@@ -26,6 +26,7 @@ class RapidWaiter(RapidBase):
     _rx_link = re.compile(r"action=(?:\")(.*?)(?:\") method=\"post\"")
     _rx_seconds = re.compile(r"var c=(\d*);")
     _rx_minutes = re.compile(r"Or try again in about (\d*) minutes.")
+    _rx_overloaded = re.compile(r"Please try again in (\d*) minutes? or become")
 
     def __init__(self, url):
         super(RapidWaiter, self).__init__()
@@ -37,6 +38,8 @@ class RapidWaiter(RapidBase):
         self.busy = False
         # przekroczony limit pobierania
         self.limit = False
+        # rapidshare przeciążony
+        self.overloaded = False
         # można pobierać
         self.done = False
 
@@ -66,8 +69,7 @@ class RapidWaiter(RapidBase):
     def sleep(self, page):
         """Oczekuje odpowiednią ilość sekund w zależności od uzyskanej
         strony"""
-        # próbuję wyciągnąć sekundy ze strony, jeśli limit pobierania
-        # został przekroczony
+        # próbuję wyciągnąć sekundy ze strony
         try:
             seconds = int(self._rx_seconds.search(page).group(1))
         except AttributeError:
@@ -75,12 +77,20 @@ class RapidWaiter(RapidBase):
             try:
                 minutes = int(self._rx_minutes.search(page).group(1))
             except AttributeError:
-                # nie wyciągnąłem minut --> adres ip komputera już pobiera
-                # inny plik
-                self.busy = True
-                self.count = 180
-                self._sleep()
-                self.busy = False
+                # sprawdzam czy rapidshare przeciążony
+                try:
+                    minutes = int(self._rx_overloaded.search(page).group(1))
+                except AttributeError:
+                    # adres ip komputera już pobiera inny plik
+                    self.busy = True
+                    self.count = 180
+                    self._sleep()
+                    self.busy = False
+                else:
+                    self.overloaded = True
+                    self.count = minutes * 60
+                    self._sleep()
+                    self.overloaded = False
             else:
                 self.limit = True
                 self.count = minutes * 30
