@@ -100,7 +100,6 @@ class ProgressBar(object):
 
 ESC = chr(27)
 
-
 def cone():
     sys.stdout.write(ESC + "[s")
 

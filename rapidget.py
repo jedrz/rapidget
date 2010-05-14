@@ -8,14 +8,12 @@ strony, wyciągając informację o tym, ile sekund musimy czekać, dopóki nie
 będziemy mogli pobrać pliku. Następnie odczekuje odpowiednią
 ilość sekund.
 
-Gdy nasz adres ip pobiera już plik, próbuje wznowić pobieranie po 15
-minutach. Wykonuje tą czynność dopóki nie będziemy mogli pobrać pliku.
+Gdy nasz adres ip pobiera już plik, próbuje wznowić pobieranie po 1,5
+minuty. Wykonuje tą czynność dopóki nie będziemy mogli pobrać pliku.
 
 Gdy url jest nieprawidłowy lub strona nie istnieje lub plik znajduje się
 w aktualnym katalogu wyświetli stosowny komunikat, a następnie przejdzie
 do pobierania następnego pliku (oczywiście jeśli takowy będzie).
-Kiedy wystąpią inne błędy skrypt przerwie działanie. Wtedy możesz
-wysłać autorowi raport błędu (adres w zmiennej __author__)
 
 Użycie:
 rapidget.py [opcje] link1 [link2..]

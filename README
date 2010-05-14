@@ -10,4 +10,4 @@ Opcje:
 Skrypt można także uruchomić bez parametrów, wtedy linki podajemy oddzielone pojedynczą spacją.
 
 Wymagania:
-- Python 2.6
+ Python 2.6.*
