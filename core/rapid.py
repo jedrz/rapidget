@@ -1,25 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import threading
 import urllib
 import urllib2
 import time
 import re
 
-
-class RapidBase(threading.Thread):
-    """Bazowa klasa z możliwością zatrzymania wątku"""
-
-    def __init__(self):
-        super(RapidBase, self).__init__()
-        self.end_thread = False
-
-    def stop(self):
-        self.end_thread = True
+from core import kthread
     
 
-class RapidWaiter(RapidBase):
+class RapidWaiter(kthread.KThread):
     """Klasa do oczekiwania na pobieranie"""
 
     USER_AGENT = "Mozilla/5.0"
@@ -117,7 +107,7 @@ class RapidWaiter(RapidBase):
         self.start()
     
 
-class RapidDownloader(RapidBase):
+class RapidDownloader(kthread.KThread):
     """Klasa służy do pobierania dowolnych plików,
     korzystając z wątków"""
 
